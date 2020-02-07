@@ -4,7 +4,6 @@
         "user": "BOT USER ID",
         "giveawayEmoji": "593992166502563865"
     },
-
     "coin": {
         "type": "erc20",
         "symbol": "ERC",
@@ -17,20 +16,17 @@
             "contract": "0x0000000000000000000000000000000000000000"
         }
     },
-
     "mysql": {
         "db": "tipbot",
         "tips": "tips",
         "user": "root",
         "pass": "pass"
     },
-
     "commands": {
         "example": [
             "CHANNEL ID"
         ]
     },
-
     "pools": {
         "pool": {
             "printName": "Pool",
@@ -39,7 +35,6 @@
             ],
             "members": []
         },
-
         "giveaways": {
             "printName": "Giveaways",
             "admins": [],

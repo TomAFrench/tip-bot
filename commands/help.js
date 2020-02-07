@@ -1,10 +1,10 @@
-//Get variables from the settings.
+// Get variables from the settings.
 var bot = process.settings.discord.user;
 var symbol = process.settings.coin.symbol;
 var decimals = process.settings.coin.decimals;
 var fee = process.settings.coin.withdrawFee;
 
-//Default help tect.
+// Default help text.
 var help = `
 **TIPBOT COMMAND LIST**
 

@@ -1,42 +1,42 @@
-//fs standard lib.
+// fs standard lib.
 var fs = require("fs");
 
-//Async sleep lib.
+// Async sleep lib.
 var sleep = require("await-sleep");
 
-//BigNumber lib.
+// BigNumber lib.
 var BN = require("bignumber.js");
 
-//EthereumJS-Wallet lib.
+// EthereumJS-Wallet lib.
 var ethjsWallet = require("ethereumjs-wallet");
 
-//Web3 lib.
+// Web3 lib.
 var web3 = require("web3");
-//ERC20 ABI.
+// ERC20 ABI.
 var abi = [{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}];
-//Contract.
+// Contract.
 var contract;
 
-//Decimals in the ERC20.
+// Decimals in the ERC20.
 var decimals;
 var decimalsBN;
 
-//Master address.
+// Master address.
 var master;
-//RAM cache of the addresses and TXs.
+// RAM cache of the addresses and TXs.
 var addresses, txs;
 
 async function createAddress() {
-    //Create a new Wallet.
+    // Create a new Wallet.
     var newWallet = ethjsWallet.generate();
     var address = newWallet.getChecksumAddressString().toString().toLowerCase();
     web3.eth.accounts.wallet.add("0x" + newWallet.getPrivateKey().toString("hex"));
     addresses.push(address);
 
-    //Save it to the disk.
+    // Save it to the disk.
     fs.writeFileSync(process.settings.coin.keys + address + ".json", JSON.stringify(newWallet.toV3(""), null, 4));
 
-    //Send the new slave Ether.
+    // Send the new slave Ether.
     var fund = await web3.eth.accounts.signTransaction({
         to: address,
         gas: 21000,
@@ -57,7 +57,7 @@ async function createAddress() {
         return;
     }
 
-    //Allow the master to spend every ERC20 the slave gets.
+    // Allow the master to spend every ERC20 the slave gets.
     var approve = await web3.eth.accounts.signTransaction({
         to: process.settings.coin.addresses.contract,
         data: await contract.methods.approve(master, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").encodeABI(),
@@ -77,9 +77,9 @@ async function createAddress() {
         return;
     }
 
-    //Add the new address to the list of addresses.
+    // Add the new address to the list of addresses.
     addresses.push(address);
-    //Return it.
+    // Return it.
     return address;
 }
 
@@ -92,10 +92,10 @@ async function getTransactions(address) {
 }
 
 async function send(to, amount) {
-    //Add on the needed decimals.
+    // Add on the needed decimals.
     amount = amount.toFixed(decimals).replace(".", "");
 
-    //Transfer the ERC20.
+    // Transfer the ERC20.
     var transfer = await web3.eth.accounts.signTransaction({
         to: process.settings.coin.addresses.contract,
         data: await contract.methods.transfer(to, amount).encodeABI(),
@@ -117,34 +117,34 @@ async function send(to, amount) {
 }
 
 module.exports = async () => {
-    //Init Web3.
+    // Init Web3.
     web3 = new web3(process.settings.coin.infura);
-    //Create the Contract object.
+    // Create the Contract object.
     contract = new web3.eth.Contract(abi, process.settings.coin.addresses.contract);
-    //Set the decimals and decimalsBN.
+    // Set the decimals and decimalsBN.
     decimals = process.settings.coin.decimals;
     decimalsBN = BN(10).pow(decimals);
 
-    //Set the master address.
+    // Set the master address.
     master = process.settings.coin.addresses.wallet.toLowerCase();
 
-    //Load every account.
+    // Load every account.
     addresses = [];
     var filenames = fs.readdirSync(process.settings.coin.keys);
     for (var file in filenames) {
         var wallet = ethjsWallet.fromV3(fs.readFileSync(process.settings.coin.keys + filenames[file]).toString(), "", true);
-        //If this isn't the master address, add it to the address array.
+        // If this isn't the master address, add it to the address array.
         var address = wallet.getChecksumAddressString().toString().toLowerCase();
         if (address !== master)  {
             addresses.push(address);
         }
-        //Add it to Web3.
+        // Add it to Web3.
         web3.eth.accounts.wallet.add("0x" + wallet.getPrivateKey().toString("hex"));
     }
 
-    //Init the TXs cache.
+    // Init the TXs cache.
     txs = {};
-    //Watch for transfers.
+    // Watch for transfers.
     contract.events.Transfer({
         fromBlock: await web3.eth.getBlockNumber()
     }, async (err, event) => {
@@ -154,18 +154,18 @@ module.exports = async () => {
             return;
         }
 
-        //Extract the data.
+        // Extract the data.
         var data = event.returnValues;
-        //Make the addresses lower case.
+        // Make the addresses lower case.
         data.from = data.from.toLowerCase();
         data.to = data.to.toLowerCase();
 
-        //Make sure it's to us.
+        // Make sure it's to us.
         if (!(await ownAddress(data.to))) {
             return;
         }
 
-        //Forward the tokens.
+        // Forward the tokens.
         var transferFrom = await web3.eth.accounts.signTransaction({
             to: process.settings.coin.addresses.contract,
             data: await contract.methods.transferFrom(data.to, master, data.value).encodeABI(),
@@ -185,26 +185,26 @@ module.exports = async () => {
             return;
         }
 
-        //Verify that worked.
+        // Verify that worked.
         if (receipt.status === false) {
             /*eslint no-console: ["error", {allow: ["error"]}]*/
             console.error("TX with hash " + event.transactionHash + " was not forwarded to the master.");
             return;
         }
 
-        //Make sure the address has a TX array.
+        // Make sure the address has a TX array.
         if (typeof(txs[data.to]) === "undefined") {
             txs[data.to] = [];
         }
 
-        //Push the TX.
+        // Push the TX.
         txs[data.to].push({
             txid: event.transactionHash,
             amount: BN(data.value).div(decimalsBN).toString()
         });
     });
 
-    //Return the functions.
+    // Return the functions.
     return {
         createAddress: createAddress,
         ownAddress: ownAddress,

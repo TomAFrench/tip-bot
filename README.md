@@ -1,32 +1,19 @@
 # Tip Bot
 
-### A BTC and ERC20 Tip bot made for Discord, with MySQL as a DB.
+### An ERC20 Tip bot made for Discord, with MySQL as a DB.
 
-This code is based off the modular (and not secure) ERC20 Tip Bot [here](https://github.com/kayabaNerve/erc20-tip-bot-old-unsafe). This one does not claim to be modular, yet it should be easy to modify this bot to work off other databases or coin APIs.
+This code is based off the modular (and not secure) ERC20 Tip Bot [here](https://github.com/kayabaNerve/erc20-tip-bot-old-unsafe).
 
 To install the bot:
-- If the coin is BTC based:
-    - Install your 'BTCd'.
-    - Edit the conf file to add `server=1`, `rpcuser=user`, and `rpcpass=pass` (with your own username and password).
-    - Start the daemon.
-    - Move `btcSettings.json` to `settings.json`.
-    - Edit the `settings.json` file's `coin` object to have:
-        - `symbol` set to the coin's symbol ("BTC").
-        - `decimals` set to the amount of the coin's decimals (8). Optionally, you may set a lower amount of decimals so users can't tip satoshis.
-        - `port` set to the daemon's RPC port (8337).
-        - `user` set to the username you set in the conf file ("user").
-        - `pass` set to the password you set in the conf file ("pass").
-- If the coin is an ERC20:
-    - Move `erc20Settings.json` to `settings.json`.
-    - Edit the `settings.json` file's `coin` object to have:
-        - `symbol` set to the coin's symbol ("ERC").
-        - `decimals` set to the amount of the coin's decimals (18).
-        - `withdrawFee` set to the amount of the coin to charge every withdraw.
-        - `infura` set to the WebSocket URL of the Infura Project the bot is run through.
-        - `keys` set to the directory used for keystore files. Every keystore in this directory must be encrypted with a blank password, and the bot will work with every keystore.
-    - Edit the `settings.json` file's `coin.addresses` object to have:
-        - `wallet` set to the address which will host all the Ether used to fund TXs. This must be an address in a keystore file already in the keys directory.
-        - `contract` set to the ERC20's contract address.
+- Edit the `settings.json` file's `coin` object to have:
+    - `symbol` set to the coin's symbol ("ERC").
+    - `decimals` set to the amount of the coin's decimals (18).
+    - `withdrawFee` set to the amount of the coin to charge every withdraw.
+    - `infura` set to the WebSocket URL of the Infura Project the bot is run through.
+    - `keys` set to the directory used for keystore files. Every keystore in this directory must be encrypted with a blank password, and the bot will work with every keystore.
+- Edit the `settings.json` file's `coin.addresses` object to have:
+    - `wallet` set to the address which will host all the Ether used to fund TXs. This must be an address in a keystore file already in the keys directory.
+    - `contract` set to the ERC20's contract address.
 - Install MySQL.
     - Create a database.
     - Create a table with `name VARCHAR(64), address VARCHAR(64), balance VARCHAR(64), notify tinyint(1)`.

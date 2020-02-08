@@ -24,9 +24,9 @@ Withdraws AMOUNT to ADDRESS, charging a ${fee} ${symbol} fee.
 -- *!deposit*
 Prints your personal deposit address.
 
-If you have any questions, feel free to ask <@272093437166223360>.
+If you have any questions, feel free to ask <@196722506676174848>.
 
-This bot is fully open source and available at https://github.com/kayabaNerve/tip-bot.
+This bot is fully open source and available at https://github.com/TomAFrench/tip-bot.
 `;
 
 module.exports = async (msg) => {

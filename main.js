@@ -22,7 +22,7 @@ async function handleMessage(msg) {
     var sender = msg.author.id;
 
     //Do not handle messages from itself.
-    if (sender === process.settings.discord.user) {
+    if (sender === process.env.BOT_USER) {
         return;
     }
 
@@ -121,7 +121,7 @@ async function main() {
     });
 
     //Connect.
-    process.client.login(process.settings.discord.token);
+    process.client.login(process.env.DISCORD_TOKEN);
 }
 
 (async () => {

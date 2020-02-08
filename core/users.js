@@ -135,13 +135,13 @@ async function getNotify(user) {
 module.exports = async () => {
     // Connects to MySQL.
     connection = await mysql.createConnection({
-        host: "localhost",
-        database: process.settings.mysql.db,
-        user: process.settings.mysql.user,
-        password: process.settings.mysql.pass
+        host: process.env.MYSQL_HOST,
+        database: process.env.MYSQL_DATABASE,
+        user: "root", // process.env.MYSQL_USER
+        password: process.env.MYSQL_ROOT_PASSWORD // process.env.MYSQL_PASSWORD
     });
     // Set the table from the settings.
-    table = process.settings.mysql.tips;
+    table = "balances"
 
     // Init the RAM cache.
     users = {};

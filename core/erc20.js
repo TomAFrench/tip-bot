@@ -118,7 +118,7 @@ async function send(to, amount) {
 
 module.exports = async () => {
     // Init Web3.
-    web3 = new web3(process.settings.coin.infura);
+    web3 = new web3(process.env.INFURA_URL);
     // Create the Contract object.
     contract = new web3.eth.Contract(abi, process.settings.coin.addresses.contract);
     // Set the decimals and decimalsBN.

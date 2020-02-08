@@ -1,5 +1,5 @@
 // Get variables from the settings.
-var bot = process.settings.discord.user;
+var bot = process.env.BOT_USER;
 var symbol = process.settings.coin.symbol;
 var decimals = process.settings.coin.decimals;
 var fee = process.settings.coin.withdrawFee;

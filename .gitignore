@@ -1,6 +1,5 @@
 #Environment variables/settings file.
 .env
-settings.json
 
 #NPM packages.
 node_modules/

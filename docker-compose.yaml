@@ -1,0 +1,36 @@
+version: '3.1'
+
+volumes:
+  data:
+
+services:
+
+  db:
+    image: mariadb
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        - data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: tips
+
+  bot:
+    image: tomfrench/tip-bot
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./settings.json:/app/settings.json
+      - ./keystore:/keystore
+    environment:
+      MYSQL_HOST: db
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: tips

@@ -64,6 +64,7 @@ async function setAddress(user, address) {
     await connection.query("UPDATE " + table + " SET address = ? WHERE name = ?", [address, user]);
     // Update the RAM cache.
     users[user].address = address;
+    return address
 }
 
 // Adds to an user's balance.

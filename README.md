@@ -2,7 +2,7 @@
 
 ### An ERC20 Tip bot made for Discord, with MySQL as a DB.
 
-This code is based off the modular (and not secure) ERC20 Tip Bot [here](https://github.com/kayabaNerve/erc20-tip-bot-old-unsafe).
+This code is based off of [kayabaNerve's Tip Bot](https://github.com/kayabaNerve/tip-bot) but with some extra goodies thrown in.
 
 ## Setting up the Bot
 
